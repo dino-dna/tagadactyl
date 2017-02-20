@@ -15,7 +15,21 @@ var tdac = {
     return fetch('https://api.github.com/repos/' + owner + '/' + repo + '/collaborators', {
       headers: headers
     })
-      .then(response => response.json())
+      .then(function (response) {
+        return Promise.all([response, response.json()])
+      })
+      .then(function (responses) {
+        var response = responses[0]
+        var body = responses[1]
+
+        if (response.status < 200 || response.status >= 400) {
+          var error = new Error('API responded with ' + response.status)
+          error.body = body
+          throw error
+        }
+
+        return body
+      })
   },
   filterCommentBlocks: function (mutations) {
     return mutations.reduce(function (collection, mutation) {
