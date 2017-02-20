@@ -3,10 +3,14 @@
 var MutationObserver = window.MutationObserver
 
 var tdac = {
+  _cache: {},
   /**
    * @returns {Promise<Object[],Error>}
    */
   getCollaborators: function () {
+    if (this._cache.collaborators) {
+      return Promise.resolve(this._cache.collaborators)
+    }
     var pieces = window.location.pathname.split('/')
     var owner = pieces[1]
     var repo = pieces[2]
@@ -15,9 +19,13 @@ var tdac = {
     return fetch('https://api.github.com/repos/' + owner + '/' + repo + '/collaborators', {
       headers: headers
     })
-      .then(response => response.json())
+      .then(function (response) { return response.json() })
+      .then(function (collaborators) {
+        this._cache.collaborators = collaborators
+        return collaborators
+      }.bind(this))
   },
-  filterCommentBlocks: function (mutations) {
+  filterSuggestedUsers: function (mutations) {
     return mutations.reduce(function (collection, mutation) {
       return collection.concat(Array.prototype.filter.call(
         mutation.addedNodes,
@@ -40,11 +48,34 @@ var tdac = {
       }
     )
   },
+  /**
+   * Inject collaborators into @-tag list
+   * @param {object} opts
+   * @param {array} opts.collaborators GH collaborators
+   * @param {array} opts.suggestedUsersNodes
+   * @returns {undefined}
+   */
+  injectCollaborators: function (opts) {
+    var suggestedUsersNodes = opts.suggestedUsersNodes
+    suggestedUsersNodes.forEach(function appendCollaborators (node) {
+      var li = document.createElement('li')
+      li.classList.add('js-navigation-item')
+      li.setAttribute('data-value', 'testers')
+      li.innerHTML = 'Collaborators <small>3 users</small>'
+      node.appendChild(li)
+    })
+  },
   processCommentBoxes: function (mutations) {
-    var commentBlocks = this.filterCommentBlocks(mutations)
-    if (!commentBlocks.length) return
-    return Promise.all([ this.getCollaborators() ])
-    .then(this.injectCollaborators.bind(this))
+    var suggestedUsersNodes = this.filterSuggestedUsers(mutations)
+    if (!suggestedUsersNodes.length) return
+    return this.getCollaborators()
+      .then(function (collaborators) {
+        debugger
+        return this.injectCollaborators({
+          collaborators: collaborators,
+          suggestedUsersNodes: suggestedUsersNodes
+        })
+      }.bind(this))
   }
 }
 
