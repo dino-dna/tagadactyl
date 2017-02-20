@@ -3,8 +3,19 @@
 var MutationObserver = window.MutationObserver
 
 var tdac = {
+  /**
+   * @returns {Promise<Object[],Error>}
+   */
   getCollaborators: function () {
-    return
+    var pieces = window.location.pathname.split('/')
+    var owner = pieces[1]
+    var repo = pieces[2]
+    var headers = new Headers()
+    headers.append('Authorization', 'token a6f94a1050b486ac25b729fa833978fe95b67731')
+    return fetch('https://api.github.com/repos/' + owner + '/' + repo + '/collaborators', {
+      headers: headers
+    })
+      .then(response => response.json())
   },
   filterCommentBlocks: function (mutations) {
     return mutations.reduce(function (collection, mutation) {
@@ -32,7 +43,7 @@ var tdac = {
   processCommentBoxes: function (mutations) {
     var commentBlocks = this.filterCommentBlocks(mutations)
     if (!commentBlocks.length) return
-    return Promise.all([ this.getCollaborators () ])
+    return Promise.all([ this.getCollaborators() ])
     .then(this.injectCollaborators.bind(this))
   }
 }
