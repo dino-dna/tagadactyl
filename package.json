@@ -1,0 +1,8 @@
+{
+  "name": "tagadactyl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:dino-dna/tagadactyl.git",
+  "author": "cdaringe <christopher.dieringer@gmail.com>",
+  "license": "MIT"
+}
