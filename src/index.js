@@ -19,11 +19,29 @@ var tdac = {
     return fetch('https://api.github.com/repos/' + owner + '/' + repo + '/collaborators', {
       headers: headers
     })
+<<<<<<< HEAD
       .then(function (response) { return response.json() })
       .then(function (collaborators) {
         this._cache.collaborators = collaborators
         return collaborators
       }.bind(this))
+=======
+      .then(function (response) {
+        return Promise.all([response, response.json()])
+      })
+      .then(function (responses) {
+        var response = responses[0]
+        var body = responses[1]
+
+        if (response.status < 200 || response.status >= 400) {
+          var error = new Error('API responded with ' + response.status)
+          error.body = body
+          throw error
+        }
+
+        return body
+      })
+>>>>>>> a5c8c41a720b3fd2d2f81cef213f14f2127858b4
   },
   filterSuggestedUsers: function (mutations) {
     return mutations.reduce(function (collection, mutation) {
