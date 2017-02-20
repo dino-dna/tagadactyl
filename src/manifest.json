@@ -3,12 +3,21 @@
   "name": "tagadactyl",
   "description": "Get dope tags in yer GitHub issues.",
   "version": "1.0",
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
-  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "index.js"
+      ]
+    }
+  ],
   "permissions": [
     "activeTab",
-    "https://ajax.googleapis.com/"
+    "https://github.com/",
+    "storage"
   ]
 }
