@@ -4,6 +4,9 @@
   "description": "Tag collaborators instantly in GitHub via @-mentions!",
   "version": "1.0.0",
   "options_page": "options.html",
+  "background": {
+    "scripts": ["bg.js"]
+  },
   "content_scripts": [
     {
       "run_at": "document_start",
@@ -18,6 +21,7 @@
   "permissions": [
     "activeTab",
     "https://github.com/",
-    "storage"
+    "storage",
+    "tabs"
   ]
 }

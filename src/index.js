@@ -109,7 +109,7 @@ var tdac = {
       }.bind(this))
       .catch(function (err) {
         if (err && err.code === 'ENOGHKEY') {
-          return chrome.runtime.openOptionsPage()
+          return chrome.runtime.sendMessage({ openOptionsPage: true })
         }
         throw err
       })
