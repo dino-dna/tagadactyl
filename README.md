@@ -1,3 +1,5 @@
+<img src="src/icon350.png" width="150px" />
+
 # tagadactyl
 
 Tag project collaborators instantly in GitHub via @-mentions!
