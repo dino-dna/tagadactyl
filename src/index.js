@@ -15,10 +15,14 @@ var tdac = {
     var owner = pieces[1]
     var repo = pieces[2]
     var headers = new Headers()
-    headers.append('Authorization', 'token a6f94a1050b486ac25b729fa833978fe95b67731')
-    return fetch('https://api.github.com/repos/' + owner + '/' + repo + '/collaborators', {
-      headers: headers
-    })
+    return this.getGHAPIToken()
+      .then(function (key) {
+        headers.append('Authorization', 'token ' + key.ghAPIKey) // @TODO sloppy fix me!
+        return fetch(
+          'https://api.github.com/repos/' + owner + '/' + repo + '/collaborators',
+          { headers: headers }
+        )
+      })
       .then(function (response) { return Promise.all([response, response.json()]) })
       .then(function (responses) {
         var response = responses[0]
@@ -35,6 +39,11 @@ var tdac = {
         return collaborators
       }.bind(this))
   },
+  getGHAPIToken: function () {
+    return new Promise(function (resolve) {
+      chrome.storage.local.get('ghAPIKey', resolve)
+    })
+  },
   filterSuggestedUsers: function (mutations) {
     return mutations.reduce(function (collection, mutation) {
       return collection.concat(Array.prototype.filter.call(
@@ -45,6 +54,29 @@ var tdac = {
           }
         }))
     }, [])
+  },
+  /**
+   * Inject collaborators into @-tag list
+   * @param {object} opts
+   * @param {array} opts.collaborators GH collaborators
+   * @param {array} opts.suggestedUsersNodes
+   * @returns {undefined}
+   */
+  injectCollaborators: function (opts) {
+    var collaborators = opts.collaborators
+    var suggestedUsersNodes = opts.suggestedUsersNodes
+    var serializedCollaborators = collaborators
+      .map(function (collab, ndx) {
+        return (ndx ? '@' : '') + collab.login
+      })
+      .join(' ')
+    suggestedUsersNodes.forEach(function appendCollaborators (node) {
+      var li = document.createElement('li')
+      li.classList.add('js-navigation-item')
+      li.setAttribute('data-value', serializedCollaborators)
+      li.innerHTML = 'Collaborators <small>' + collaborators.length + ' users</small>'
+      node.appendChild(li)
+    })
   },
   listenForComments: function () {
     var observer = new MutationObserver(this.processCommentBoxes.bind(this))
@@ -58,35 +90,11 @@ var tdac = {
       }
     )
   },
-  /**
-   * Inject collaborators into @-tag list
-   * @param {object} opts
-   * @param {array} opts.collaborators GH collaborators
-   * @param {array} opts.suggestedUsersNodes
-   * @returns {undefined}
-   */
-  injectCollaborators: function (opts) {
-    var collaborators = opts.collaborators
-    var suggestedUsersNodes = opts.suggestedUsersNodes
-    var serializedCollaborators = collaborators
-      .map(function (collab) {
-        return collab.login
-      })
-      .join(' ')
-    suggestedUsersNodes.forEach(function appendCollaborators (node) {
-      var li = document.createElement('li')
-      li.classList.add('js-navigation-item')
-      li.setAttribute('data-value', serializedCollaborators)
-      li.innerHTML = 'Collaborators <small>' + collaborators.length + 'users</small>'
-      node.appendChild(li)
-    })
-  },
   processCommentBoxes: function (mutations) {
     var suggestedUsersNodes = this.filterSuggestedUsers(mutations)
     if (!suggestedUsersNodes.length) return
     return this.getCollaborators()
       .then(function (collaborators) {
-        debugger
         return this.injectCollaborators({
           collaborators: collaborators,
           suggestedUsersNodes: suggestedUsersNodes
