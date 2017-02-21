@@ -39,4 +39,3 @@ getKey().then(function maybeSetInput (key) {
 })
 
 ghTokenInput.addEventListener('keyup', saveOptions)
-

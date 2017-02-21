@@ -117,10 +117,3 @@ var tdac = {
 }
 
 tdac.listenForComments()
-
-/*
-  1a. make query for collabs
-  1b. modify DOM, add <li> thing
-  - listen for click/enter
-    - on select, inject users
-*/
