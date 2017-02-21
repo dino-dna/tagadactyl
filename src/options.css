@@ -1,0 +1,77 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #fafafa;
+  color: #222;
+  font-family: sans-serif;
+  font-size: 100%;
+  line-height: 1.25;
+}
+body {
+  margin: 2rem auto;
+  max-width: 30rem;
+}
+
+h1 {
+  border-bottom: thin solid #ccc;
+  font-size: 150%;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0 0 1.7rem;
+  padding-bottom: .3rem;
+}
+
+.label-wrapper {
+  margin-bottom: .25rem;
+}
+.label-wrapper label {
+  font-weight: 700;
+}
+.label-wrapper a {
+  color: #666;
+  font-style: italic;
+}
+.label-wrapper a:active,
+.label-wrapper a:focus,
+.label-wrapper a:hover {
+  color: #1155cc;
+}
+
+input {
+  border: thin solid #ccc;
+  border-radius: 2px;
+  color: #000;
+  display: block;
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  margin: 0 0 .5rem;
+  padding: .5rem;
+  width: 100%;
+}
+input:active,
+input:focus {
+  border-color: #1155cc;
+  outline: none;
+}
+
+/**
+ * Form save status
+ */
+#status {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#status.is-visible {
+  opacity: 1;
+}
+#status > * {
+  background: #1155cc;
+  border-radius: 2px;
+  color: #fff;
+  display: block;
+  padding: .5rem .5rem;
+}
+

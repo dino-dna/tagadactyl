@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Configure Tagadactyl</title>
-  <style>
-    #status {
-      transition: all 0.5s;
-    }
-  </style>
-</head>
-<body>
-  <label>
-    <input type="password" id="github_api_token">
-    GitHub API Token
-  </label>
-  <div id="status"></div>
+  <head>
+    <title>Configure Tagadactyl</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <h1>Configure Tagadactyl</h1>
+    <form method="post">
+      <div class="label-wrapper">
+        <label>GitHub API Token</label>
+        <a
+          href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/"
+          target="_blank"
+          title="Creating an access token for command-line use"
+        >
+          (How to generate)
+        </a>
+      </div>
+      <input type="password" id="github_api_token">
+      <div id="status"></div>
+    </form>
 
-  <script src="options.js"></script>
-</body>
+    <script src="options.js"></script>
+  </body>
 </html>
