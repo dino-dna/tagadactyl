@@ -8,9 +8,11 @@ function saveOptions () {
     ghAPIKey: ghAPIKey
   }, function handledOptionsSaved () {
     var status = document.getElementById('status')
-    status.style.opacity = 1
-    status.textContent = 'Options saved successfully'
-    setTimeout(function () { status.style.opacity = 0 }, 5000)
+    status.classList.add('is-visible')
+    status.innerHTML = '<span>Options saved successfully</span>'
+    setTimeout(function () {
+      status.classList.remove('is-visible')
+    }, 3000)
   })
 }
 
