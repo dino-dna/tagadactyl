@@ -17,7 +17,7 @@ var tdac = {
     var headers = new Headers()
     return this.getGHAPIToken()
       .then(function (key) {
-        headers.append('Authorization', 'token ' + key.ghAPIKey) // @TODO sloppy fix me!
+        headers.append('Authorization', 'token ' + key)
         return fetch(
           'https://api.github.com/repos/' + owner + '/' + repo + '/collaborators',
           { headers: headers }
@@ -40,8 +40,15 @@ var tdac = {
       }.bind(this))
   },
   getGHAPIToken: function () {
-    return new Promise(function (resolve) {
-      chrome.storage.local.get('ghAPIKey', resolve)
+    return new Promise(function (resolve, reject) {
+      chrome.storage.local.get('ghAPIKey', function (options) {
+        if (!options || !options.ghAPIKey) {
+          var err = new Error('no GH key')
+          err.code = 'ENOGHKEY'
+          return reject(err)
+        }
+        return resolve(options.ghAPIKey)
+      })
     })
   },
   filterSuggestedUsers: function (mutations) {
@@ -100,6 +107,12 @@ var tdac = {
           suggestedUsersNodes: suggestedUsersNodes
         })
       }.bind(this))
+      .catch(function (err) {
+        if (err && err.code === 'ENOGHKEY') {
+          return chrome.runtime.openOptionsPage()
+        }
+        throw err
+      })
   }
 }
 
