@@ -1,8 +1,8 @@
 # tagadactyl
 
-Tag collaborators instantly in GitHub via @-mentions!
+Tag project collaborators instantly in GitHub via @-mentions!
 
-![](img/taga-quick-demo.gif)
+<img src="img/taga-quick-demo.gif" width="500px;" />
 
 
 ## install
