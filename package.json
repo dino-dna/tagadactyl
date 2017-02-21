@@ -17,6 +17,7 @@
     "standard": "^8.6.0"
   },
   "scripts": {
+    "build": " zip -j tagadactyl src/*",
     "lint": "standard src/**/*.js"
   }
 }
