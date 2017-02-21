@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "tagadactyl",
-  "description": "Get dope tags in yer GitHub issues.",
-  "version": "1.0",
+  "description": "Tag collaborators instantly in GitHub via @-mentions!",
+  "version": "1.0.0",
   "options_page": "options.html",
   "content_scripts": [
     {
