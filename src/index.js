@@ -1,6 +1,16 @@
 'use strict'
 
 var MutationObserver = window.MutationObserver
+// https://gist.github.com/pbroschwitz/3891293
+var supplant = function (str, kvPairs) {
+  return str.replace(
+    /{([^{}]*)}/g,
+    function (a, b) {
+      var r = kvPairs[b]
+      return typeof r === 'string' || typeof r === 'number' ? r : a
+    }
+  )
+}
 
 // @TODO, remove post testing
 var testGroups = [
@@ -42,10 +52,18 @@ var tdac = {
       console.log('blah!')
     })
   },
+  /**
+   * Get an <li> ready for insertion into the GitHub suggestions list.
+   * @param {object} opts
+   * @param {string} [opts.textInjectedOnSelect] text injected into GH comments
+   *   section when the <li> is selected
+   * @param {HTMLLIElement} li
+   */
   createListNode: function (opts) {
+    opts = opts || {}
     var li = document.createElement('li')
     li.classList.add('js-navigation-item')
-    li.setAttribute('data-value', opts.textInjectedOnSelect)
+    li.setAttribute('data-value', opts.textInjectedOnSelect || '')
     return li
   },
   /**
@@ -81,10 +99,13 @@ var tdac = {
       }.bind(this))
   },
   getConfigureGroupButtonHTML: function (group) {
-    return '<img id={id} class="taga-configure" src="{url}" />'.supplant({
-      id: this.mapGroupToGroupId(group),
-      url: chrome.extension.getURL('gear.svg')
-    })
+    return supplant(
+      '<img id={id} class="taga-configure" src="{url}" />',
+      {
+        id: this.mapGroupToGroupId(group),
+        url: chrome.extension.getURL('gear.svg')
+      }
+    )
   },
   getGroups: function () {
     return new Promise(function (resolve, reject) {
@@ -94,6 +115,9 @@ var tdac = {
       }.bind(this))
     }.bind(this))
   },
+  /**
+   * @returns {Promise<string>} ghAPIKey
+   */
   getGHAPIToken: function () {
     return new Promise(function (resolve, reject) {
       chrome.storage.local.get('ghAPIKey', function (options) {
@@ -122,9 +146,6 @@ var tdac = {
       return chrome.runtime.sendMessage({ openOptionsPage: true })
     }
     throw err
-  },
-  injectAdmin: function () {
-    // add Add/edit group
   },
   /**
    * Inject collaborators into @-tag list
@@ -187,7 +208,6 @@ var tdac = {
   processCommentBoxes: function (mutations) {
     var suggestedUsersNodes = this.filterSuggestedUsers(mutations)
     if (!suggestedUsersNodes.length) return
-    this.injectAdmin()
     var asyncSources = Promise.all([
       this.getCollaborators(),
       this.getGroups(),
@@ -209,17 +229,5 @@ var tdac = {
 
 // eager bind tdac members, s.t. `this` behaves more `class``like
 for (var key in tdac) if (typeof tdac[key] === 'function') tdac[key] = tdac[key].bind(tdac)
-
-// https://gist.github.com/pbroschwitz/3891293
-// that's right, i went there.  sue me.
-String.prototype.supplant = function (o) {
-  return this.replace(
-    /{([^{}]*)}/g,
-    function (a, b) {
-      var r = o[b];
-      return typeof r === 'string' || typeof r === 'number' ? r : a;
-    }
-  )
-}
 
 tdac.listenForComments()
