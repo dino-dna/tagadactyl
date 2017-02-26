@@ -43,8 +43,8 @@ var tdac = {
   get owner () { return window.location.pathname.split('/')[1] },
   get repo () { return window.location.pathname.split('/')[2] },
 
-  bindClickConfigureGroupHandler (group) {
-    var node = document.getElementById(this.mapGroupToGroupId(group))
+  bindClickConfigureGroupHandler (node) {
+    debugger
     node.addEventListener('click', function (evt) {
       evt.stopImmediatePropagation()
       evt.stopPropagation()
@@ -183,7 +183,8 @@ var tdac = {
     opts.suggestedUsersNodes.forEach(function appendGroupInjectButton (node) {
       groupSet.forEach(function (group) {
         node.appendChild(group.tagNode)
-        this.bindClickConfigureGroupHandler(group)
+        var imgNode = group.tagNode.children[1] // @TODO robustify img selection here
+        this.bindClickConfigureGroupHandler(imgNode)
       }.bind(this))
     }.bind(this))
   },
