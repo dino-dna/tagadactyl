@@ -6,7 +6,7 @@ var testGroups = [
 ]
 
 var tdac = {
-  bindClickConfigureGroupHandler (node) {
+  bindClickConfigureGroupHandler: function (node) {
     node.addEventListener('click', function (evt) {
       evt.stopImmediatePropagation()
       evt.stopPropagation()
