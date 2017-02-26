@@ -9,7 +9,7 @@ Tag project collaborators instantly in GitHub via @-mentions!
 
 ## install
 
-- Install [from chrome, here](...)
+- Install [from chrome, here](https://chrome.google.com/webstore/detail/tagadactyl/kefjfpalipgfihkgkdpppijlnbhoikob)
 
 ## setup
 
