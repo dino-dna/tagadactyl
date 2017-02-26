@@ -1,0 +1,11 @@
+.taga-configure {
+  float: right;
+  margin-left: 10px;
+  opacity: 0.5;
+  transition: all 0.4s;
+}
+
+.taga-configure:hover {
+  opacity: 1;
+  cursor: pointer;
+}
